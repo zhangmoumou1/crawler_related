@@ -66,15 +66,19 @@ class Crawler(object, metaclass=ProxyMetaclass):
         : param page_count: 页码
         : return: 代理
         """
+
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36'
+        }
         start_url = 'https://www.xicidaili.com/nn/{}'
         urls = [start_url.format(page) for page in range(1, page_count + 1)]
         for url in urls:
             print('Crawling', url)
-            html = requests.get(url).text
+            html = requests.get(url, headers=headers).text
             if html:
                 doc = pq(html)
-                trs = doc('.table.table-bordered.table-striped tbody tr:gt(0)').items()
+                trs = doc('.clearfix.proxies #ip_list tr:gt(0)').items()
                 for tr in trs:
-                    ip = tr.find('td:nth-child(1)').text()
-                    port = tr.find('td:nth-child(2)').text()
+                    ip = tr.find('td:nth-child(2)').text()
+                    port = tr.find('td:nth-child(3)').text()
                     yield ':'.join([ip, port])
