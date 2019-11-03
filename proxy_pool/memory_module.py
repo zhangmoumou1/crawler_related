@@ -1,13 +1,20 @@
+# -*- coding: utf-8 -*-
+# @Date    : 2019-11-03
+# @Author  : 惜命命
+# @model   : 代理池.存储模块
+
+import sys
+sys.path.append('./proxy_pool')
+import redis
+from random import choice
+
 max_score = 100
 min_score = 0
 initial_score = 10
-redis_host = 'xxxxxxx'
+redis_host = '115.159.79.24'
 redis_port = 6397
-redis_password = 'xxxxxx'
+redis_password = 'root123456'
 redis_key = 'proxies'
-
-import redis
-from random import choice
 
 class RedisClient(object):
     def __init__(self, host=redis_host, port=redis_port, password=redis_password):
@@ -40,7 +47,7 @@ class RedisClient(object):
             if len(result):
                 return choice(result)
             else:
-                raise PoolEmptyError
+                raise Exception
 
     def decrease(self, proxy):
         """
@@ -70,19 +77,19 @@ class RedisClient(object):
         :param proxy: 代理
         :return: 设置结果
         """
-        print(' 代理 ', proxy, ' 可用，设置为 ', MAX_SCORE)
-        return self.db.zadd(REDIS_KEY, MAX_SCORE, proxy)
+        print(' 代理 ', proxy, ' 可用，设置为 ', max_score)
+        return self.db.zadd(redis_key, max_score, proxy)
 
     def count(self):
         """
         获取数量
         :return: 数量
         """
-        return self.db.zcard(REDIS_KEY)
+        return self.db.zcard(redis_key)
 
     def all(self):
         """
         获取全部代理
         :return: 全部代理列表
         """
-        return self.db.zrangebyscore(REDIS_KEY, MIN_SCORE, MAX_SCORE)
+        return self.db.zrangebyscore(redis_key, min_score, max_score)
