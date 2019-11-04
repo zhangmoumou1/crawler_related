@@ -3,6 +3,12 @@
 # @Author  : 惜命命
 # @model   : 代理池.调度模块--将其他模块运行起来
 
+TESTER_CYCLE = 20
+GETTER_CYCLE = 20
+TESTER_ENABLED = True
+GETTER_ENABLED = True
+API_ENABLED = True
+
 import time
 from multiprocessing import Process
 from proxypool.api import app
@@ -10,7 +16,6 @@ from proxypool.getter import Getter
 from proxypool.tester import Tester
 from proxypool.db import RedisClient
 from proxypool.setting import *
-
 
 class Scheduler():
     def schedule_tester(self, cycle=TESTER_CYCLE):

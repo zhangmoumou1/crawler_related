@@ -8,7 +8,6 @@ import re
 from .utils import get_page
 from pyquery import PyQuery as pq
 
-
 class ProxyMetaclass(type):
     def __new__(cls, name, bases, attrs):
         count = 0
@@ -19,7 +18,6 @@ class ProxyMetaclass(type):
                 count += 1
         attrs['__CrawlFuncCount__'] = count
         return type.__new__(cls, name, bases, attrs)
-
 
 class Crawler(object, metaclass=ProxyMetaclass):
     def get_proxies(self, callback):
@@ -49,7 +47,7 @@ class Crawler(object, metaclass=ProxyMetaclass):
                     yield ':'.join([ip, port])
 
     def crawl_ip3366(self):
-        for page in range(1, 4):
+        for page in range(1, 2):
             start_url = 'http://www.ip3366.net/free/?stype=1&page={}'.format(page)
             html = get_page(start_url)
             ip_address = re.compile('<tr>\s*<td>(.*?)</td>\s*<td>(.*?)</td>')

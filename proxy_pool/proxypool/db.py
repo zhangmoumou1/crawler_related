@@ -3,13 +3,12 @@
 # @Author  : 惜命命
 # @model   : 代理池.存储模块
 
-import redis
+import redis, sys, os
 from proxypool.error import PoolEmptyError
 from proxypool.setting import REDIS_HOST, REDIS_PORT, REDIS_PASSWORD, REDIS_KEY
 from proxypool.setting import MAX_SCORE, MIN_SCORE, INITIAL_SCORE
 from random import choice
 import re
-
 
 class RedisClient(object):
     def __init__(self, host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD):
@@ -32,9 +31,9 @@ class RedisClient(object):
             print('代理不符合规范', proxy, '丢弃')
             return
         if not self.db.zscore(REDIS_KEY, proxy):
-            #return self.db.zadd(REDIS_KEY, score, proxy)
+            return self.db.zadd(REDIS_KEY, score, proxy)
             #更新为redis3.0+版本，解决redis3.0更新后的报错，如用旧版本还原上方代码
-            return self.db.zadd(REDIS_KEY, {proxy:score})
+            # return self.db.zadd(REDIS_KEY, {proxy:score})
     
     def random(self):
         """
@@ -60,7 +59,7 @@ class RedisClient(object):
         score = self.db.zscore(REDIS_KEY, proxy)
         if score and score > MIN_SCORE:
             print('代理', proxy, '当前分数', score, '减1')
-            #return self.db.zincrby(REDIS_KEY, proxy, -1)
+            # return self.db.zincrby(REDIS_KEY, proxy, -1)
             #更新为redis3.0+版本，解决redis3.0更新后的报错，如用旧版本还原上方代码
             return self.db.zincrby(REDIS_KEY, -1, proxy)
         else:
@@ -82,7 +81,7 @@ class RedisClient(object):
         :return: 设置结果
         """
         print('代理', proxy, '可用，设置为', MAX_SCORE)
-        #return self.db.zadd(REDIS_KEY, MAX_SCORE, proxy)
+        # return self.db.zadd(REDIS_KEY, MAX_SCORE, proxy)
         #更新为redis3.0+版本，解决redis3.0更新后的报错，如用旧版本还原上方代码
         return self.db.zadd(REDIS_KEY, {proxy:MAX_SCORE})
     
@@ -109,8 +108,7 @@ class RedisClient(object):
         """
         return self.db.zrevrange(REDIS_KEY, start, stop - 1)
 
-
 if __name__ == '__main__':
     conn = RedisClient()
-    result = conn.batch(680, 688)
+    result = conn.decrease('103.115.42.36:8080')
     print(result)

@@ -1,5 +1,5 @@
 # Redis数据库地址
-REDIS_HOST = '127.0.0.1'
+REDIS_HOST = 'xxx.xxx.xxx.xxx'
 
 # Redis端口
 REDIS_PORT = 6379
@@ -28,7 +28,7 @@ GETTER_CYCLE = 300
 TEST_URL = 'http://www.baidu.com'
 
 # API配置
-API_HOST = '0.0.0.0'
+API_HOST = '127.0.0.1'
 API_PORT = 5555
 
 # 开关
